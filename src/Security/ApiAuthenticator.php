@@ -41,7 +41,7 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
             return null;
         }
 
-        $userProvider->loadUserByUsername($apiKey);
+        return $userProvider->loadUserByUsername($apiKey);
     }
 
     public function checkCredentials($credentials, UserInterface $user)
