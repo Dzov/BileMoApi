@@ -19,6 +19,18 @@ class CompanyCustomerRepository extends ServiceEntityRepository
         parent::__construct($registry, CompanyCustomer::class);
     }
 
+    public function findAllByCompany(int $companyId)
+    {
+        return $this->createQueryBuilder('cc')
+            ->select('cc.firstName, cc.lastName, cc.email')
+            ->addSelect('c.name AS company')
+            ->leftJoin('cc.company', 'c')
+            ->andWhere('c.id = :id')
+            ->setParameter('id', $companyId)
+            ->getQuery()
+            ->getResult();
+    }
+
     // /**
     //  * @return CompanyCustomer[] Returns an array of CompanyCustomer objects
     //  */
