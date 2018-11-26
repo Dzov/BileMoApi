@@ -20,7 +20,7 @@ abstract class User implements UserInterface
     /**
      * @ORM\Column(type="json", nullable=true)
      */
-    private $roles = [];
+    protected $roles = [];
 
     public function getId(): int
     {
