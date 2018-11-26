@@ -20,7 +20,8 @@ security:
             stateless: true
             pattern: ^/api/
             guard:
-                authenticator: App\Security\ApiAuthenticator
+                authenticators:
+                    - App\Security\ApiAuthenticator
             provider: company_provider
 
     access_control:
