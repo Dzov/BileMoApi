@@ -7,8 +7,15 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CompanyCustomerRepository")
  */
-class CompanyCustomer extends User
+class CompanyCustomer
 {
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    protected $id;
+
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Company")
      * @ORM\JoinColumn(nullable=false)
@@ -30,10 +37,10 @@ class CompanyCustomer extends User
      */
     private $lastName;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $password;
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
     public function getCompany(): Company
     {
@@ -79,18 +86,6 @@ class CompanyCustomer extends User
     public function setLastName(string $lastName): self
     {
         $this->lastName = $lastName;
-
-        return $this;
-    }
-
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
 
         return $this;
     }
