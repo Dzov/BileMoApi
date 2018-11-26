@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class ListMobilePhonesController extends AbstractController
 {
     /**
-     * @Route("/api/phones", name="list_mobile_phones")
+     * @Route("/api/phones", name="list_mobile_phones", methods={"GET"})
      */
     public function list(SerializerInterface $serializer)
     {

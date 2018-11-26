@@ -31,6 +31,25 @@ class CompanyCustomerRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @return mixed
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findOneByCompany(int $companyId, int $customerId)
+    {
+        return $this->createQueryBuilder('cc')
+            ->select('cc.firstName, cc.lastName, cc.email')
+            ->addSelect('c.name AS company')
+            ->leftJoin('cc.company', 'c')
+            ->andWhere('cc.id = :customerId')
+            ->setParameter('customerId', $customerId)
+            ->andWhere('c.id = :companyId')
+            ->setParameter('companyId', $companyId)
+            ->getQuery()
+            ->getSingleResult();
+    }
+
     // /**
     //  * @return CompanyCustomer[] Returns an array of CompanyCustomer objects
     //  */
