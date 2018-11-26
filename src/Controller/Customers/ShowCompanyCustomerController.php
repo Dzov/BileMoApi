@@ -20,9 +20,8 @@ class ShowCompanyCustomerController extends AbstractController
     {
         $company = $this->getUser();
 
-        $customer = $this->getDoctrine()->getRepository(CompanyCustomer::class)->findOneByCompany(
-            $company->getId(),
-            $customer->getId()
+        $customer = $this->getDoctrine()->getRepository(CompanyCustomer::class)->findOneBy(
+            ['company' => $company->getId(), 'id' => $customer->getId()]
         );
 
         $data = $serializer->serialize($customer, 'json');

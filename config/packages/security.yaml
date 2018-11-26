@@ -15,14 +15,13 @@ security:
             security: false
         main:
             pattern: ^/api/token$
-            anonymous: true
-        api_key:
-            stateless: true
-            pattern: ^/api/
             guard:
                 authenticators:
                     - App\Security\ApiAuthenticator
             provider: company_provider
+#        jwt_key:
+#            stateless: true
+#            pattern: ^/api/
 
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }

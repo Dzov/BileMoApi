@@ -18,7 +18,9 @@ class ListCompanyCustomersController extends AbstractController
     {
         $company = $this->getUser();
 
-        $customers = $this->getDoctrine()->getRepository(CompanyCustomer::class)->findAllByCompany($company->getId());
+        $customers = $this->getDoctrine()->getRepository(CompanyCustomer::class)->findBy(
+            ['company' => $company->getId()]
+        );
 
         $data = $serializer->serialize($customers, 'json');
 
