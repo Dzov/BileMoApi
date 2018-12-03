@@ -19,6 +19,7 @@ security:
                 authenticators:
                     - App\Security\ApiAuthenticator
             provider: company_provider
+            stateless: true
 #        jwt_key:
 #            stateless: true
 #            pattern: ^/api/

@@ -60,12 +60,12 @@ class Company extends User
         return $this;
     }
 
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->apiPassword;
     }
 
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->apiKey;
     }

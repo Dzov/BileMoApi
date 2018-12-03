@@ -30,18 +30,24 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
 
     public function getCredentials(Request $request)
     {
-        return ['apiKey' => $request->headers->get('apiKey'), 'apiPassword' => $request->headers->get('apiPassword')];
+        return [
+            'apiKey'      => $request->headers->get('X-API-KEY'),
+            'apiPassword' => $request->headers->get('X-API-PASSWORD'),
+        ];
     }
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         $apiKey = $credentials['apiKey'];
+        $apiPassword = $credentials['apiPassword'];
 
-        if (null === $apiKey) {
+        if (null === $apiKey || null === $apiPassword) {
             return null;
         }
 
-        return $userProvider->loadUserByUsername($apiKey);
+        $user = $userProvider->loadUserByUsername($apiKey);
+
+        return $user;
     }
 
     public function checkCredentials($credentials, UserInterface $user)
@@ -51,9 +57,17 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        $data = [
-            'message' => strtr($exception->getMessageKey(), $exception->getMessageData()),
-        ];
+        $credentials = $exception->getToken()->getCredentials();
+        $data = [];
+
+        if (null === $credentials['apiKey']) {
+            $data['message'] = ['X-API-KEY' => 'Vous devez renseigner une clef d\'authentification'];
+        }
+        if (null === $credentials['apiPassword']) {
+            $data['message'] += ['X-API-PASSWORD' => 'Vous devez renseigner un mot de passe'];
+        }
+
+        $data['message'] = 'Vos identifiants sont erronés';
 
         return new JsonResponse($data, Response::HTTP_FORBIDDEN);
     }
