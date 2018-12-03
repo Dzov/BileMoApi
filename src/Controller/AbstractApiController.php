@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Exception\InvalidFormDataException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @author Amélie Haladjian <amelie.haladjian@gmail.com>
@@ -17,23 +19,26 @@ abstract class AbstractApiController extends AbstractController
      */
     private $serializer;
 
-    public function __construct(SerializerInterface $serializer)
+    /**
+     * @var ValidatorInterface
+     */
+    private $validator;
+
+    public function __construct(SerializerInterface $serializer, ValidatorInterface $validator)
     {
         $this->serializer = $serializer;
+        $this->validator = $validator;
     }
 
-    /**
-     * @param array|Object $data
-     */
-    public function createJsonResponse($data): JsonResponse
+    public function createJsonResponse($data, array $groups = [], int $response = Response::HTTP_OK): JsonResponse
     {
         if (empty($data)) {
             return $this->createNotFoundResponse();
         }
 
-        $jsonData = $this->serializer->serialize($data, 'json', ['groups' => 'public']);
+        $jsonData = $this->serializer->serialize($data, 'json', ['groups' => $groups]);
 
-        return new JsonResponse($jsonData, Response::HTTP_OK, [], true);
+        return new JsonResponse($jsonData, $response, [], true);
     }
 
     private function createNotFoundResponse(): JsonResponse
@@ -43,5 +48,22 @@ abstract class AbstractApiController extends AbstractController
         ];
 
         return new JsonResponse(json_encode($data, 256), Response::HTTP_NOT_FOUND, [], true);
+    }
+
+    /**
+     * @throws InvalidFormDataException
+     */
+    public function validate($data)
+    {
+        $errors = $this->validator->validate($data);
+
+        if (count($errors) > 0) {
+            $errorMessages = [];
+            foreach ($errors as $error) {
+                $errorMessages[$error->getPropertyPath()] = $error->getMessage();
+            }
+
+            throw new InvalidFormDataException($errorMessages);
+        }
     }
 }

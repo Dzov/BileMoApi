@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CompanyCustomerRepository")
@@ -25,6 +26,7 @@ class CompanyCustomer
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
+     * @Assert\Email()
      * @Groups("public")
      */
     private $email;
@@ -32,6 +34,7 @@ class CompanyCustomer
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups("public")
+     * @Assert\NotBlank()
      */
     private $firstName;
 

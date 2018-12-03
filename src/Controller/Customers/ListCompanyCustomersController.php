@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ListCompanyCustomersController extends AbstractApiController
 {
     /**
-     * @Route("/api/customers", name="list_company_customers")
+     * @Route("/api/customers", name="list_company_customers", methods={"GET"})
      */
     public function list()
     {
@@ -19,6 +19,6 @@ class ListCompanyCustomersController extends AbstractApiController
             ['company' => $company->getId()]
         );
 
-        return $this->createJsonResponse($customers);
+        return $this->createJsonResponse($customers, ['public']);
     }
 }

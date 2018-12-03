@@ -3,8 +3,9 @@
 namespace App\Controller\Authentication;
 
 use App\Controller\AbstractApiController;
-use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @author Amélie Haladjian <amelie.haladjian@gmail.com>
@@ -12,14 +13,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class JwtAuthController extends AbstractApiController
 {
     /**
-     * @Route("/api/token", name="authentication")
+     * @Route("/api/token", name="authentication", methods={"POST"})
      */
-    public function authenticate(JWTEncoderInterface $encoder)
+    public function authenticate(JWTTokenManagerInterface $jwtTokenManager, UserInterface $user)
     {
-        $user = $this->getUser();
-
-        $token = $encoder->encode(['username' => $user->getUsername()]);
-
-        return $this->createJsonResponse(['Autorization token' => $token]);
+        return $this->createJsonResponse(['access_token' => $jwtTokenManager->create($user)]);
     }
 }
