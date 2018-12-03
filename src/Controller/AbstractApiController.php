@@ -22,9 +22,12 @@ abstract class AbstractApiController extends AbstractController
         $this->serializer = $serializer;
     }
 
-    public function createJsonResponse(array $data = []): JsonResponse
+    /**
+     * @param array|\ArrayObject $data
+     */
+    public function createJsonResponse($data): JsonResponse
     {
-        $jsonData = $this->serializer->serialize($data, 'json');
+        $jsonData = $this->serializer->serialize($data, 'json', ['groups' => 'public']);
 
         return new JsonResponse($jsonData, Response::HTTP_OK, [], true);
     }

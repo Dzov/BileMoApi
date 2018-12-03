@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CompanyCustomerRepository")
@@ -24,16 +25,19 @@ class CompanyCustomer
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
+     * @Groups("public")
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("public")
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("public")
      */
     private $lastName;
 
@@ -88,10 +92,5 @@ class CompanyCustomer
         $this->lastName = $lastName;
 
         return $this;
-    }
-
-    public function getUsername()
-    {
-        return $this->email;
     }
 }

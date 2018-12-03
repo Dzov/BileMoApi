@@ -69,7 +69,7 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
 
         $data['message'] = 'Vos identifiants sont erronés';
 
-        return new JsonResponse($data, Response::HTTP_FORBIDDEN);
+        return new JsonResponse(json_encode($data, 256), Response::HTTP_FORBIDDEN, [], true);
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)

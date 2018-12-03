@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CompanyEmployeeRepository")
@@ -12,11 +13,13 @@ class CompanyEmployee extends User
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Company")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("public")
      */
     private $company;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
+     * @Groups("public")
      */
     private $email;
 
