@@ -23,12 +23,25 @@ abstract class AbstractApiController extends AbstractController
     }
 
     /**
-     * @param array|\ArrayObject $data
+     * @param array|Object $data
      */
     public function createJsonResponse($data): JsonResponse
     {
+        if (empty($data)) {
+            return $this->createNotFoundResponse();
+        }
+
         $jsonData = $this->serializer->serialize($data, 'json', ['groups' => 'public']);
 
         return new JsonResponse($jsonData, Response::HTTP_OK, [], true);
+    }
+
+    private function createNotFoundResponse(): JsonResponse
+    {
+        $data = [
+            'message' => 'La ressource n\'existe pas',
+        ];
+
+        return new JsonResponse(json_encode($data, 256), Response::HTTP_NOT_FOUND, [], true);
     }
 }
