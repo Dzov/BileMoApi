@@ -2,21 +2,18 @@
 
 namespace App\Controller\Customers;
 
+use App\Controller\AbstractApiController;
 use App\Entity\CompanyCustomer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
-class ShowCompanyCustomerController extends AbstractController
+class ShowCompanyCustomerController extends AbstractApiController
 {
     /**
      * @Route("/api/customers/{id}", name="show_company_customer", methods={"GET"}, requirements={"id"="\d+"})
      * @Entity("CompanyCustomer", expr="repository.find(id)"))
      */
-    public function show(SerializerInterface $serializer, CompanyCustomer $customer)
+    public function show(CompanyCustomer $customer)
     {
         $company = $this->getUser();
 
@@ -24,8 +21,6 @@ class ShowCompanyCustomerController extends AbstractController
             ['company' => $company->getId(), 'id' => $customer->getId()]
         );
 
-        $data = $serializer->serialize($customer, 'json');
-
-        return new JsonResponse($data, Response::HTTP_OK, [], true);
+        return $this->createJsonResponse($customer);
     }
 }

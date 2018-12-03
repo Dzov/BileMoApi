@@ -2,19 +2,16 @@
 
 namespace App\Controller\Customers;
 
+use App\Controller\AbstractApiController;
 use App\Entity\CompanyCustomer;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
-class ListCompanyCustomersController extends AbstractController
+class ListCompanyCustomersController extends AbstractApiController
 {
     /**
      * @Route("/api/customers", name="list_company_customers")
      */
-    public function list(SerializerInterface $serializer)
+    public function list()
     {
         $company = $this->getUser();
 
@@ -22,8 +19,6 @@ class ListCompanyCustomersController extends AbstractController
             ['company' => $company->getId()]
         );
 
-        $data = $serializer->serialize($customers, 'json');
-
-        return new JsonResponse($data, Response::HTTP_OK, [], true);
+        return $this->createJsonResponse($customers);
     }
 }

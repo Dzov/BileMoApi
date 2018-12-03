@@ -2,24 +2,19 @@
 
 namespace App\Controller\Product;
 
+use App\Controller\AbstractApiController;
 use App\Entity\MobilePhone;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
-class ListMobilePhonesController extends AbstractController
+class ListMobilePhonesController extends AbstractApiController
 {
     /**
      * @Route("/api/phones", name="list_mobile_phones", methods={"GET"})
      */
-    public function list(SerializerInterface $serializer)
+    public function list()
     {
         $phones = $this->getDoctrine()->getRepository(MobilePhone::class)->findAll();
 
-        $data = $serializer->serialize($phones, 'json');
-
-        return new JsonResponse($data, Response::HTTP_OK, [], true);
+        return $this->createJsonResponse($phones);
     }
 }

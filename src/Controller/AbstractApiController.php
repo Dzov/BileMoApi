@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
@@ -11,13 +12,20 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 abstract class AbstractApiController extends AbstractController
 {
-    public function createJsonResponse(array $data): JsonResponse
-    {
+    /**
+     * @var SerializerInterface
+     */
+    private $serializer;
 
+    public function __construct(SerializerInterface $serializer)
+    {
+        $this->serializer = $serializer;
     }
 
-    public function serialize($object, SerializerInterface $serializer)
+    public function createJsonResponse(array $data = []): JsonResponse
     {
-        return $serializer->serialize($object, 'json');
+        $jsonData = $this->serializer->serialize($data, 'json');
+
+        return new JsonResponse($jsonData, Response::HTTP_OK, [], true);
     }
 }
