@@ -41,13 +41,14 @@ abstract class AbstractApiController extends AbstractController
         return new JsonResponse($jsonData, $response, [], true);
     }
 
-    private function createNotFoundResponse(): JsonResponse
+    public function createNotFoundResponse(): JsonResponse
     {
-        $data = [
+        $errors['errors'] = [
+            'status'  => 404,
             'message' => 'La ressource n\'existe pas',
         ];
 
-        return new JsonResponse(json_encode($data, 256), Response::HTTP_NOT_FOUND, [], true);
+        return new JsonResponse(json_encode($errors, 256), Response::HTTP_NOT_FOUND, [], true);
     }
 
     /**
