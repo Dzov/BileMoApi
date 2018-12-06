@@ -18,11 +18,21 @@ class CreateCompanyCustomersController extends AbstractApiController
     public function create(Request $request, SerializerInterface $serializer)
     {
         $data = $request->getContent();
+        /** @var CompanyCustomer $customer */
         $customer = $serializer->deserialize($data, CompanyCustomer::class, 'json');
         $customer->setCompany($this->getUser());
 
         try {
+            $errors['errors'] = [];
+            if ($this->userAlreadyExists($customer)) {
+                $errors['errors'] = ['status' => 409, 'message' => ['email' => 'This email address already exists']];
+            }
+
             $this->validate($customer);
+
+            if (!empty($errors['errors'])) {
+                return $this->createJsonResponse($errors, [], Response::HTTP_CONFLICT);
+            }
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($customer);
@@ -30,7 +40,18 @@ class CreateCompanyCustomersController extends AbstractApiController
 
             return $this->createJsonResponse($customer, ['public'], Response::HTTP_CREATED);
         } catch (InvalidFormDataException $e) {
-            return $this->createJsonResponse($e->getErrors(), [], Response::HTTP_CONFLICT);
+            foreach ($e->getErrors() as $key => $error) {
+                $errors['errors']['message'][$key] = $error;
+            }
+
+            return $this->createJsonResponse($errors, [], Response::HTTP_CONFLICT);
         }
+    }
+
+    private function userAlreadyExists(CompanyCustomer $customer): bool
+    {
+        return null !== $this->getDoctrine()->getRepository(CompanyCustomer::class)->findOneBy(
+                ['email' => $customer->getEmail()]
+            );
     }
 }

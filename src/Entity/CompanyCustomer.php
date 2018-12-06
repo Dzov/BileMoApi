@@ -41,6 +41,7 @@ class CompanyCustomer
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups("public")
+     * @Assert\NotBlank()
      */
     private $lastName;
 
