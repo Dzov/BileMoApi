@@ -5,6 +5,8 @@ namespace App\Controller\Customers;
 use App\Controller\AbstractApiController;
 use App\Entity\CompanyCustomer;
 use App\Exception\InvalidFormDataException;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,6 +15,21 @@ use Symfony\Component\Serializer\SerializerInterface;
 class CreateCompanyCustomersController extends AbstractApiController
 {
     /**
+     * Creates a new customer tied to a company and returns it.
+     *
+     * @SWG\Response(response=201, description="Created", @SWG\Schema(type="array",
+     *                             @SWG\Items(ref=@Model(type=CompanyCustomer::class))))
+     * @SWG\Response(response=409, description="Conflict, invalid field")
+     *
+     * @SWG\Parameter(
+     *     name="customer",
+     *     in="body",
+     *     required=true,
+     *     schema= {"$ref": "#/definitions/companyCustomer"}
+     * )
+     *
+     * @SWG\Tag(name="customers")
+     *
      * @Route("/api/customers", name="create_company_customer", methods={"POST"})
      */
     public function create(Request $request, SerializerInterface $serializer)

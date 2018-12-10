@@ -20,6 +20,9 @@ security:
                     - App\Security\ApiAuthenticator
             provider: company_provider
             stateless: true
+        documentation:
+            pattern: ^/api/doc
+            security: false
         jwt_key:
             stateless: true
             pattern: ^/api/

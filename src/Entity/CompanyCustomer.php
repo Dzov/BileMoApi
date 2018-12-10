@@ -28,6 +28,8 @@ class CompanyCustomer
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     *
+     * @Expose
      */
     protected $id;
 
@@ -40,6 +42,7 @@ class CompanyCustomer
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\Email()
+     * @Assert\NotBlank()
      *
      * @Expose
      */
