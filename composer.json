@@ -19,7 +19,8 @@
         "symfony/security-bundle": "4.1.*",
         "symfony/serializer": "4.1.*",
         "symfony/validator": "4.1.*",
-        "symfony/yaml": "4.1.*"
+        "symfony/yaml": "4.1.*",
+        "willdurand/hateoas-bundle": "^1.4"
     },
     "require-dev": {
         "symfony/dotenv": "4.1.*",

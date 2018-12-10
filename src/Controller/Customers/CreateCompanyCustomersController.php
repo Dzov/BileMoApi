@@ -31,20 +31,18 @@ class CreateCompanyCustomersController extends AbstractApiController
             $this->validate($customer);
 
             if (!empty($errors['errors'])) {
-                return $this->createJsonResponse($errors, [], Response::HTTP_CONFLICT);
+                return $this->createJsonResponse($errors, Response::HTTP_CONFLICT);
             }
 
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($customer);
-            $em->flush();
+            $this->createCustomer($customer);
 
-            return $this->createJsonResponse($customer, ['public'], Response::HTTP_CREATED);
+            return $this->createJsonResponse($customer, Response::HTTP_CREATED);
         } catch (InvalidFormDataException $e) {
             foreach ($e->getErrors() as $key => $error) {
                 $errors['errors']['message'][$key] = $error;
             }
 
-            return $this->createJsonResponse($errors, [], Response::HTTP_CONFLICT);
+            return $this->createJsonResponse($errors, Response::HTTP_CONFLICT);
         }
     }
 
@@ -53,5 +51,12 @@ class CreateCompanyCustomersController extends AbstractApiController
         return null !== $this->getDoctrine()->getRepository(CompanyCustomer::class)->findOneBy(
                 ['email' => $customer->getEmail()]
             );
+    }
+
+    private function createCustomer($customer): void
+    {
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($customer);
+        $em->flush();
     }
 }

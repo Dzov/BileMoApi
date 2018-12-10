@@ -19,6 +19,6 @@ class ListCompanyCustomersController extends AbstractApiController
             ['company' => $company->getId()]
         );
 
-        return $this->createJsonResponse($customers, ['public']);
+        return $this->createJsonResponse($customers);
     }
 }

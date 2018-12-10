@@ -27,12 +27,17 @@ class DeleteCompanyCustomersController extends AbstractApiController
             return $this->createNotFoundResponse();
         }
 
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($customer);
-        $entityManager->flush();
+        $this->deleteCustomer($customer);
 
         $message = ['status' => 200, 'message' => 'The ressource has been deleted'];
 
-        return $this->createJsonResponse($message, []);
+        return $this->createJsonResponse($message);
+    }
+
+    private function deleteCustomer($customer): void
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($customer);
+        $entityManager->flush();
     }
 }

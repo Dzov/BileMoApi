@@ -15,6 +15,6 @@ class ListMobilePhonesController extends AbstractApiController
     {
         $phones = $this->getDoctrine()->getRepository(MobilePhone::class)->findAll();
 
-        return $this->createJsonResponse($phones, ['public']);
+        return $this->createJsonResponse($phones);
     }
 }

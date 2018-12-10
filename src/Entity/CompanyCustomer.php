@@ -3,11 +3,24 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Expose;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CompanyCustomerRepository")
+ *
+ * @Hateoas\Relation("self", href = @Hateoas\Route("show_company_customer", parameters = { "id" =
+ *                              "expr(object.getId())" }, absolute = true))
+ * @Hateoas\Relation("list", href = @Hateoas\Route("list_company_customers", absolute = true))
+ * @Hateoas\Relation("create", href = @Hateoas\Route("create_company_customer", absolute = true))
+ * @Hateoas\Relation("delete", href = @Hateoas\Route("delete_company_customer", parameters = { "id" =
+ *                             "expr(object.getId())" }, absolute = true))
+ *
+ * @Hateoas\Relation("company", embedded = @Hateoas\Embedded("expr(object.getCompany())"))
+ *
+ * @ExclusionPolicy("all")
  */
 class CompanyCustomer
 {
@@ -27,21 +40,24 @@ class CompanyCustomer
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\Email()
-     * @Groups("public")
+     *
+     * @Expose
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("public")
      * @Assert\NotBlank()
+     *
+     * @Expose
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("public")
      * @Assert\NotBlank()
+     *
+     * @Expose
      */
     private $lastName;
 

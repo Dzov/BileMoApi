@@ -3,10 +3,15 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MobilePhoneRepository")
+ *
+ * @Hateoas\Relation("self", href = @Hateoas\Route("show_phone", parameters = { "id" = "expr(object.getId())" },
+ *                           absolute = true))
+ * @Hateoas\Relation("list", href = @Hateoas\Route("list_mobile_phones", absolute = true))
  */
 class MobilePhone
 {
@@ -14,42 +19,38 @@ class MobilePhone
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     *
+     * @Serializer\Exclude()
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("public")
      */
     private $brand;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups("public")
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("public")
      */
     private $os;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups("public")
      */
     private $price;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups("public")
      */
     private $screenSize;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups("public")
      */
     private $storage;
 

@@ -3,10 +3,13 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\ExclusionPolicy;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @author Amélie Haladjian <amelie.haladjian@gmail.com>
+ *
+ * @ExclusionPolicy("all")
  */
 abstract class User implements UserInterface
 {
