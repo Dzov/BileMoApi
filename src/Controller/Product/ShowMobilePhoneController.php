@@ -18,6 +18,6 @@ class ShowMobilePhoneController extends AbstractApiController
      */
     public function show(MobilePhone $phone)
     {
-        return $this->createJsonResponse($phone);
+        return $this->createJsonResponse($phone, ['details']);
     }
 }
