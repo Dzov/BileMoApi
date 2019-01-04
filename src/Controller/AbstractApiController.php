@@ -9,6 +9,7 @@ use JMS\Serializer\SerializationContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -46,22 +47,12 @@ abstract class AbstractApiController extends AbstractController
     public function createJsonResponse($data, array $groups = [], int $response = Response::HTTP_OK): JsonResponse
     {
         if (empty($data)) {
-            return $this->createNotFoundResponse();
+            throw new NotFoundHttpException();
         }
 
         $jsonData = $this->serializeHateoas($data, $groups);
 
         return new JsonResponse($jsonData, $response, [], true);
-    }
-
-    public function createNotFoundResponse(): JsonResponse
-    {
-        $errors['errors'] = [
-            'status'  => 404,
-            'message' => 'The resource you are looking for does not exist',
-        ];
-
-        return new JsonResponse(json_encode($errors, 256), Response::HTTP_NOT_FOUND, [], true);
     }
 
     /**
