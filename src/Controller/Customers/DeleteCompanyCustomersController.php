@@ -46,7 +46,7 @@ class DeleteCompanyCustomersController extends AbstractApiController
 
             $this->deleteCustomer($customer);
 
-            $message = ['status' => Response::HTTP_OK, 'message' => 'The ressource has been deleted'];
+            $message = ['status' => Response::HTTP_OK, 'message' => 'The resource has been deleted'];
 
             return $this->createJsonResponse($message);
         } catch (CompanyCustomerNotFoundException $e) {
