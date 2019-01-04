@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\EventSubscriber\ExceptionListener;
+use App\EventSubscriber\ExceptionSubscriber;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Resource\FileResource;
@@ -64,7 +64,7 @@ class Kernel extends BaseKernel implements CompilerPassInterface
 
     public function process(ContainerBuilder $container)
     {
-        $exceptionListenerDefinition = $container->findDefinition(ExceptionListener::class);
+        $exceptionListenerDefinition = $container->findDefinition(ExceptionSubscriber::class);
         $normalizers = $container->findTaggedServiceIds('app.normalizer');
 
         foreach ($normalizers as $id => $tags) {

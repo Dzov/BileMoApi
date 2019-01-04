@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 /**
  * @author Amélie Haladjian <amelie.haladjian@gmail.com>
  */
-class ExceptionListener implements EventSubscriberInterface
+class ExceptionSubscriber implements EventSubscriberInterface
 {
     private $serializer;
 
