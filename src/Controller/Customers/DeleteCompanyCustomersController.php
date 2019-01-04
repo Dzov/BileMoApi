@@ -4,8 +4,11 @@ namespace App\Controller\Customers;
 
 use App\Controller\AbstractApiController;
 use App\Entity\CompanyCustomer;
+use App\Exception\CompanyCustomerNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Swagger\Annotations as SWG;
+use SwaggerFixures\Customer;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -32,25 +35,24 @@ class DeleteCompanyCustomersController extends AbstractApiController
      * @Route("/api/customers/{id}", name="delete_company_customer", methods={"DELETE"}, requirements={"id"="\d+"})
      * @Entity("CompanyCustomer", expr="repository.find(id)"))
      */
-    public function delete(CompanyCustomer $customer)
+    public function delete(CompanyCustomer $customer): JsonResponse
     {
-        $company = $this->getUser();
-        $customer = $this->getDoctrine()->getRepository(CompanyCustomer::class)->findOneBy(
-            ['company' => $company->getId(), 'id' => $customer->getId()]
-        );
+        try {
+            $company = $this->getUser();
+            $customer = $this->getDoctrine()->getRepository(CompanyCustomer::class)
+                ->findOneCustomerByIdAndCompany($customer->getId(), $company->getId());
 
-        if (null === $customer) {
+            $this->deleteCustomer($customer);
+
+            $message = ['status' => 200, 'message' => 'The ressource has been deleted'];
+
+            return $this->createJsonResponse($message);
+        } catch (CompanyCustomerNotFoundException $e) {
             return $this->createNotFoundResponse();
         }
-
-        $this->deleteCustomer($customer);
-
-        $message = ['status' => 200, 'message' => 'The ressource has been deleted'];
-
-        return $this->createJsonResponse($message);
     }
 
-    private function deleteCustomer($customer): void
+    private function deleteCustomer(Customer $customer): void
     {
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($customer);
