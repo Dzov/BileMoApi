@@ -40,34 +40,19 @@ class CreateCompanyCustomersController extends AbstractApiController
         $customer->setCompany($this->getUser());
 
         try {
-            $errors['errors'] = [];
-            if ($this->userAlreadyExists($customer)) {
-                $errors['errors'] = ['status' => 409, 'message' => ['email' => 'This email address already exists']];
-            }
-
             $this->validate($customer);
-
-            if (!empty($errors['errors'])) {
-                return $this->createJsonResponse($errors, Response::HTTP_CONFLICT);
-            }
 
             $this->createCustomer($customer);
 
-            return $this->createJsonResponse($customer, Response::HTTP_CREATED);
+            return $this->createJsonResponse($customer, [], Response::HTTP_CREATED);
         } catch (InvalidFormDataException $e) {
+            $errors['errors'] = [];
             foreach ($e->getErrors() as $key => $error) {
                 $errors['errors']['message'][$key] = $error;
             }
 
-            return $this->createJsonResponse($errors, Response::HTTP_CONFLICT);
+            return $this->createJsonResponse($errors, [], Response::HTTP_CONFLICT);
         }
-    }
-
-    private function userAlreadyExists(CompanyCustomer $customer): bool
-    {
-        return null !== $this->getDoctrine()->getRepository(CompanyCustomer::class)->findOneBy(
-                ['email' => $customer->getEmail()]
-            );
     }
 
     private function createCustomer($customer): void
