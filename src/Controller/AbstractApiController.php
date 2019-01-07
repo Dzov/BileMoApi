@@ -2,10 +2,16 @@
 
 namespace App\Controller;
 
+use App\Exception\InvalidFormDataException;
+use Hateoas\HateoasBuilder;
+use Hateoas\UrlGenerator\SymfonyUrlGenerator;
+use JMS\Serializer\SerializationContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @author Amélie Haladjian <amelie.haladjian@gmail.com>
@@ -17,31 +23,62 @@ abstract class AbstractApiController extends AbstractController
      */
     private $serializer;
 
-    public function __construct(SerializerInterface $serializer)
-    {
+    /**
+     * @var ValidatorInterface
+     */
+    private $validator;
+
+    /**
+     * @var UrlGeneratorInterface
+     */
+    private $generator;
+
+    public function __construct(
+        SerializerInterface $serializer,
+        ValidatorInterface $validator,
+        UrlGeneratorInterface $generator
+    ) {
         $this->serializer = $serializer;
+        $this->validator = $validator;
+        $this->generator = $generator;
+    }
+
+    public function createJsonResponse($data, array $groups = [], int $response = Response::HTTP_OK): JsonResponse
+    {
+        $jsonData = $this->serializeHateoas($data, $groups);
+
+        return new JsonResponse($jsonData, $response, [], true);
     }
 
     /**
-     * @param array|Object $data
+     * @throws InvalidFormDataException
      */
-    public function createJsonResponse($data): JsonResponse
+    public function validate($data)
     {
-        if (empty($data)) {
-            return $this->createNotFoundResponse();
+        $errors = $this->validator->validate($data);
+
+        if (count($errors) > 0) {
+            $errorMessages = [];
+            foreach ($errors as $error) {
+                $errorMessages[$error->getPropertyPath()] = $error->getMessage();
+            }
+
+            throw new InvalidFormDataException($errorMessages);
         }
-
-        $jsonData = $this->serializer->serialize($data, 'json', ['groups' => 'public']);
-
-        return new JsonResponse($jsonData, Response::HTTP_OK, [], true);
     }
 
-    private function createNotFoundResponse(): JsonResponse
+    public function serializeHateoas($data, array $groups = []): string
     {
-        $data = [
-            'message' => 'La ressource n\'existe pas',
-        ];
+        $hateoas = HateoasBuilder::create()
+            ->setUrlGenerator(null, new SymfonyUrlGenerator($this->generator))
+            ->build();
 
-        return new JsonResponse(json_encode($data, 256), Response::HTTP_NOT_FOUND, [], true);
+        if (!empty($groups)) {
+            $context = SerializationContext::create()->setGroups($groups);
+
+            return $hateoas->serialize($data, 'json', $context);
+        }
+
+        return $hateoas->serialize($data, 'json');
     }
 }
