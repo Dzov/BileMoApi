@@ -3,13 +3,11 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @author Amélie Haladjian <amelie.haladjian@gmail.com>
- *
- * @ExclusionPolicy("all")
  */
 abstract class User implements UserInterface
 {
@@ -22,6 +20,8 @@ abstract class User implements UserInterface
 
     /**
      * @ORM\Column(type="json", nullable=true)
+     *
+     * @Serializer\Exclude()
      */
     protected $roles = [];
 

@@ -22,7 +22,7 @@ class MobilePhone
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      *
-     * @Serializer\Exclude()
+     * @Groups({"list", "details"})
      */
     private $id;
 
