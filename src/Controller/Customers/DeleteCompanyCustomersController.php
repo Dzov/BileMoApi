@@ -5,10 +5,11 @@ namespace App\Controller\Customers;
 use App\Controller\AbstractApiController;
 use App\Entity\CompanyCustomer;
 use App\Exception\CompanyCustomerNotFoundException;
+use Doctrine\ORM\NoResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Swagger\Annotations as SWG;
-use SwaggerFixures\Customer;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -44,15 +45,13 @@ class DeleteCompanyCustomersController extends AbstractApiController
 
             $this->deleteCustomer($customer);
 
-            $message = ['status' => 200, 'message' => 'The ressource has been deleted'];
-
-            return $this->createJsonResponse($message);
-        } catch (CompanyCustomerNotFoundException $e) {
-            return $this->createNotFoundResponse();
+            return $this->createJsonResponse([]);
+        } catch (NoResultException $e) {
+            throw new NotFoundHttpException();
         }
     }
 
-    private function deleteCustomer(Customer $customer): void
+    private function deleteCustomer(CompanyCustomer $customer): void
     {
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($customer);
