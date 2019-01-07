@@ -4,11 +4,20 @@ namespace App\Controller\Customers;
 
 use App\Controller\AbstractApiController;
 use App\Entity\CompanyCustomer;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ListCompanyCustomersController extends AbstractApiController
 {
     /**
+     * Returns the list of a company's customers.
+     *
+     * @SWG\Response(response=200, description="Returns the list of all company customers",
+     *     @SWG\Schema(type="array", @SWG\Items(ref=@Model(type=CompanyCustomer::class))))
+     *
+     * @SWG\Tag(name="customers")
+     *
      * @Route("/api/customers", name="list_company_customers", methods={"GET"})
      */
     public function list()

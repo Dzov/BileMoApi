@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Exception\InvalidFormDataException;
 use Hateoas\HateoasBuilder;
 use Hateoas\UrlGenerator\SymfonyUrlGenerator;
+use JMS\Serializer\SerializationContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -42,25 +43,11 @@ abstract class AbstractApiController extends AbstractController
         $this->generator = $generator;
     }
 
-    public function createJsonResponse($data, int $response = Response::HTTP_OK): JsonResponse
+    public function createJsonResponse($data, array $groups = [], int $response = Response::HTTP_OK): JsonResponse
     {
-        if (empty($data)) {
-            return $this->createNotFoundResponse();
-        }
-
-        $jsonData = $this->serializeHateoas($data);
+        $jsonData = $this->serializeHateoas($data, $groups);
 
         return new JsonResponse($jsonData, $response, [], true);
-    }
-
-    public function createNotFoundResponse(): JsonResponse
-    {
-        $errors['errors'] = [
-            'status'  => 404,
-            'message' => 'La ressource n\'existe pas',
-        ];
-
-        return new JsonResponse(json_encode($errors, 256), Response::HTTP_NOT_FOUND, [], true);
     }
 
     /**
@@ -80,11 +67,17 @@ abstract class AbstractApiController extends AbstractController
         }
     }
 
-    public function serializeHateoas($data): string
+    public function serializeHateoas($data, array $groups = []): string
     {
         $hateoas = HateoasBuilder::create()
             ->setUrlGenerator(null, new SymfonyUrlGenerator($this->generator))
             ->build();
+
+        if (!empty($groups)) {
+            $context = SerializationContext::create()->setGroups($groups);
+
+            return $hateoas->serialize($data, 'json', $context);
+        }
 
         return $hateoas->serialize($data, 'json');
     }
