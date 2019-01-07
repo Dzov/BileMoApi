@@ -1,0 +1,22 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: BileMo Api
+            description: BileMo is a B2B service offering a wide selection of high end mobile phones.
+            version: 1.0.0
+        definitions:
+            companyCustomer:
+                type: object
+                properties:
+                    email:
+                        type: string
+                        required: true
+                    firstName:
+                        type: string
+                        required: true
+                    lastName:
+                        type: string
+                        required: true
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc

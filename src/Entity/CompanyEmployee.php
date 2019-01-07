@@ -3,20 +3,28 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Expose;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CompanyEmployeeRepository")
+ *
+ * @ExclusionPolicy("all")
  */
 class CompanyEmployee extends User
 {
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Company")
      * @ORM\JoinColumn(nullable=false)
+     *
+     * @Expose
      */
     private $company;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
+     *
+     * @Expose
      */
     private $email;
 

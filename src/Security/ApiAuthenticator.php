@@ -16,11 +16,13 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
  */
 class ApiAuthenticator extends AbstractGuardAuthenticator
 {
+    const MESSAGE = 'message';
+
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $data = ['message' => 'Authentication Required'];
+        $data = [self::MESSAGE => 'Authentication Required'];
 
-        return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
+        return new JsonResponse($data);
     }
 
     public function supports(Request $request)
@@ -58,18 +60,25 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
         $credentials = $exception->getToken()->getCredentials();
-        $data = [];
 
-        if (null === $credentials['apiKey']) {
-            $data['message'] = ['X-API-KEY' => 'Vous devez renseigner une clef d\'authentification'];
+        switch (true) {
+            case (empty($credentials['apiKey']) && empty($credentials['apiPassword'])) :
+                $errors['errors'] = ['status' => 400, self::MESSAGE => 'Authentication required'];
+
+                return $this->createJsonResponse($errors);
+            case (empty($credentials['apiKey'])):
+                $errors['errors'] = ['status' => 400, self::MESSAGE => 'Required parameter missing : X-API-KEY'];
+
+                return $this->createJsonResponse($errors);
+            case (empty($credentials['apiPassword'])) :
+                $errors['errors'] = ['status' => 400, self::MESSAGE => 'Required parameter missing : X-API-PASSWORD'];
+
+                return $this->createJsonResponse($errors);
+            default :
+                $errors['errors'] = ['status' => 403, self::MESSAGE => 'Please provide valid credentials'];
+
+                return $this->createJsonResponse($errors, Response::HTTP_FORBIDDEN);
         }
-        if (null === $credentials['apiPassword']) {
-            $data['message'] += ['X-API-PASSWORD' => 'Vous devez renseigner un mot de passe'];
-        }
-
-        $data['message'] = 'Vos identifiants sont erronés';
-
-        return new JsonResponse($data, Response::HTTP_FORBIDDEN);
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
@@ -80,5 +89,10 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
     public function supportsRememberMe()
     {
         return false;
+    }
+
+    private function createJsonResponse(array $errors, int $status = Response::HTTP_BAD_REQUEST): JsonResponse
+    {
+        return new JsonResponse(json_encode($errors, 256), $status, [], true);
     }
 }

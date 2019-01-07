@@ -20,9 +20,16 @@ security:
                     - App\Security\ApiAuthenticator
             provider: company_provider
             stateless: true
-#        jwt_key:
-#            stateless: true
-#            pattern: ^/api/
+        documentation:
+            pattern: ^/api/doc
+            security: false
+        jwt_key:
+            stateless: true
+            pattern: ^/api/
+            provider: company_provider
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
 
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
