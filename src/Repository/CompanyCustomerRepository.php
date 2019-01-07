@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\CompanyCustomer;
+use App\Exception\CompanyCustomerNotFoundException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -19,32 +20,20 @@ class CompanyCustomerRepository extends ServiceEntityRepository
         parent::__construct($registry, CompanyCustomer::class);
     }
 
-    // /**
-    //  * @return CompanyCustomer[] Returns an array of CompanyCustomer objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Doctrine\ORM\NoResultException
+     */
+    public function findOneCustomerByIdAndCompany(int $customerId, int $companyId)
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('cc')
+            ->addSelect('c')
+            ->leftJoin('cc.company', 'c')
+            ->andWhere('cc.id = :customerId')
+            ->setParameter('customerId', $customerId)
+            ->andWhere('c.id = :companyId')
+            ->setParameter('companyId', $companyId)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getSingleResult();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?CompanyCustomer
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

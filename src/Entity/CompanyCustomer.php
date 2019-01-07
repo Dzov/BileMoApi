@@ -3,12 +3,38 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Expose;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * @Hateoas\Relation("self", href = @Hateoas\Route("show_company_customer", parameters = { "id" =
+ *                              "expr(object.getId())" }, absolute = true))
+ * @Hateoas\Relation("list", href = @Hateoas\Route("list_company_customers", absolute = true))
+ * @Hateoas\Relation("create", href = @Hateoas\Route("create_company_customer", absolute = true))
+ * @Hateoas\Relation("delete", href = @Hateoas\Route("delete_company_customer", parameters = { "id" =
+ *                             "expr(object.getId())" }, absolute = true))
+ *
+ * @Hateoas\Relation("company", embedded = @Hateoas\Embedded("expr(object.getCompany())"))
+ *
  * @ORM\Entity(repositoryClass="App\Repository\CompanyCustomerRepository")
+ * @UniqueEntity("email")
+ *
+ * @ExclusionPolicy("all")
  */
-class CompanyCustomer extends User
+class CompanyCustomer
 {
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     *
+     * @Expose
+     */
+    protected $id;
+
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Company")
      * @ORM\JoinColumn(nullable=false)
@@ -17,23 +43,33 @@ class CompanyCustomer extends User
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
+     * @Assert\Email()
+     * @Assert\NotBlank()
+     *
+     * @Expose
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     *
+     * @Expose
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     *
+     * @Expose
      */
     private $lastName;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $password;
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
     public function getCompany(): Company
     {
@@ -81,22 +117,5 @@ class CompanyCustomer extends User
         $this->lastName = $lastName;
 
         return $this;
-    }
-
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    public function getUsername()
-    {
-        return $this->email;
     }
 }
