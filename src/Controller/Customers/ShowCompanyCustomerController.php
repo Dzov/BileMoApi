@@ -19,6 +19,15 @@ class ShowCompanyCustomerController extends AbstractApiController
      * @SWG\Response(response=404, description="The resource does not exist")
      *
      * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     required=true,
+     *     type="string",
+     *     default="Bearer {jwt}",
+     *     description="Your Json Web Token"
+     * )
+     *
+     * @SWG\Parameter(
      *     name="id",
      *     in="path",
      *     required=true,

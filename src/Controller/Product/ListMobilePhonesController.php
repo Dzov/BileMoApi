@@ -16,6 +16,15 @@ class ListMobilePhonesController extends AbstractApiController
      * @SWG\Response(response=200, description="Returns the list of all of BileMo's mobile phones",
      *     @SWG\Schema(type="array", @SWG\Items(ref=@Model(type=MobilePhone::class, groups={"list"}))))
      *
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     required=true,
+     *     type="string",
+     *     default="Bearer {jwt}",
+     *     description="Your Json Web Token"
+     * )
+     *
      * @SWG\Tag(name="phones")
      *
      * @Route("/api/phones", name="list_mobile_phones", methods={"GET"})

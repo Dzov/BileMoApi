@@ -22,6 +22,15 @@ class CreateCompanyCustomersController extends AbstractApiController
      * @SWG\Response(response=409, description="Conflict, invalid field")
      *
      * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     required=true,
+     *     type="string",
+     *     default="Bearer {jwt}",
+     *     description="Your Json Web Token"
+     * )
+     *
+     * @SWG\Parameter(
      *     name="customer",
      *     in="body",
      *     required=true,
