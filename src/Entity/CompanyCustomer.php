@@ -6,11 +6,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Hateoas\Configuration\Annotation as Hateoas;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\CompanyCustomerRepository")
- *
  * @Hateoas\Relation("self", href = @Hateoas\Route("show_company_customer", parameters = { "id" =
  *                              "expr(object.getId())" }, absolute = true))
  * @Hateoas\Relation("list", href = @Hateoas\Route("list_company_customers", absolute = true))
@@ -19,6 +18,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  *                             "expr(object.getId())" }, absolute = true))
  *
  * @Hateoas\Relation("company", embedded = @Hateoas\Embedded("expr(object.getCompany())"))
+ *
+ * @ORM\Entity(repositoryClass="App\Repository\CompanyCustomerRepository")
+ * @UniqueEntity("email")
  *
  * @ExclusionPolicy("all")
  */
