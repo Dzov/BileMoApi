@@ -42,12 +42,31 @@ class ShowCompanyCustomerController extends AbstractApiController
      */
     public function show(CompanyCustomer $customer)
     {
+        $cacheItem = $this->cache->getItem('customers.' . md5($customer->getId()));
+
+        if (!$cacheItem->isHit()) {
+            $customer = $this->getCustomer($customer);
+
+            $cacheItem->set($customer);
+            $this->cache->save($cacheItem);
+        }
+
+        $customer = $cacheItem->get();
+
+        return $this->createJsonResponse($customer);
+    }
+
+    /**
+     * @return CompanyCustomer|null|object
+     */
+    private function getCustomer(CompanyCustomer $customer)
+    {
         $company = $this->getUser();
 
         $customer = $this->getDoctrine()->getRepository(CompanyCustomer::class)->findOneBy(
             ['company' => $company->getId(), 'id' => $customer->getId()]
         );
 
-        return $this->createJsonResponse($customer);
+        return $customer;
     }
 }

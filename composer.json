@@ -11,6 +11,7 @@
         "sensio/framework-extra-bundle": "^5.2",
         "symfony/apache-pack": "^1.0",
         "symfony/asset": "4.1.*",
+        "symfony/cache": "4.1.*",
         "symfony/console": "4.1.*",
         "symfony/doctrine-bridge": "4.1.*",
         "symfony/expression-language": "4.1.*",

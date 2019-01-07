@@ -31,12 +31,27 @@ class ListCompanyCustomersController extends AbstractApiController
      */
     public function list()
     {
-        $company = $this->getUser();
+        $cacheItem = $this->cache->getItem('customers.list');
 
+        if (!$cacheItem->isHit()) {
+            $customers = $this->getCustomers();
+
+            $cacheItem->set($customers);
+            $this->cache->save($cacheItem);
+        }
+
+        $customers = $cacheItem->get();
+
+        return $this->createJsonResponse($customers);
+    }
+
+    private function getCustomers(): array
+    {
+        $company = $this->getUser();
         $customers = $this->getDoctrine()->getRepository(CompanyCustomer::class)->findBy(
             ['company' => $company->getId()]
         );
 
-        return $this->createJsonResponse($customers);
+        return $customers;
     }
 }
