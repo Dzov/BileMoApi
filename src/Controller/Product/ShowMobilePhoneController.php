@@ -2,27 +2,40 @@
 
 namespace App\Controller\Product;
 
+use App\Controller\AbstractApiController;
 use App\Entity\MobilePhone;
+use Nelmio\ApiDocBundle\Annotation\Model;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\SerializerInterface;
+use Swagger\Annotations as SWG;
 
 /**
  * @author Amélie Haladjian <amelie.haladjian@gmail.com>
  */
-class ShowMobilePhoneController extends AbstractController
+class ShowMobilePhoneController extends AbstractApiController
 {
     /**
+     * Returns the details of a selected mobile phone.
+     *
+     * @SWG\Response(response=200, description="Returns the details of a specific mobile phone",
+     *     @SWG\Schema(type="array", @SWG\Items(ref=@Model(type=MobilePhone::class, groups={"details"}))))
+     * @SWG\Response(response=404, description="The resource does not exist")
+     *
+     * @SWG\Parameter(
+     *     name="id",
+     *     in="path",
+     *     required=true,
+     *     type="integer",
+     *     description="The field used to identify a specific phone"
+     * )
+     *
+     * @SWG\Tag(name="phones")
+     *
      * @Route("/api/phones/{id}", name="show_phone", methods={"GET"}, requirements={"id"="\d+"})
      * @Entity("MobilePhone", expr="repository.find(id)")
      */
-    public function show(MobilePhone $phone, SerializerInterface $serializer)
+    public function show(MobilePhone $phone)
     {
-        $data = $serializer->serialize($phone, 'json');
-
-        return new JsonResponse($data, Response::HTTP_OK, [], true);
+        return $this->createJsonResponse($phone, ['details']);
     }
 }
