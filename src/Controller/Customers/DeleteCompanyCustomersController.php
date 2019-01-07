@@ -8,7 +8,6 @@ use App\Exception\CompanyCustomerNotFoundException;
 use Doctrine\ORM\NoResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Swagger\Annotations as SWG;
-use SwaggerFixures\Customer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -52,7 +51,7 @@ class DeleteCompanyCustomersController extends AbstractApiController
         }
     }
 
-    private function deleteCustomer(Customer $customer): void
+    private function deleteCustomer(CompanyCustomer $customer): void
     {
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($customer);
