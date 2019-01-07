@@ -6,7 +6,11 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/doctrine-fixtures-bundle": "^3.0",
+        "lexik/jwt-authentication-bundle": "^2.6",
+        "nelmio/api-doc-bundle": "^3.3",
         "sensio/framework-extra-bundle": "^5.2",
+        "symfony/apache-pack": "^1.0",
+        "symfony/asset": "4.1.*",
         "symfony/console": "4.1.*",
         "symfony/doctrine-bridge": "4.1.*",
         "symfony/expression-language": "4.1.*",
@@ -16,7 +20,9 @@
         "symfony/routing": "4.1.*",
         "symfony/security-bundle": "4.1.*",
         "symfony/serializer": "4.1.*",
-        "symfony/yaml": "4.1.*"
+        "symfony/validator": "4.1.*",
+        "symfony/yaml": "4.1.*",
+        "willdurand/hateoas-bundle": "^1.4"
     },
     "require-dev": {
         "symfony/dotenv": "4.1.*",

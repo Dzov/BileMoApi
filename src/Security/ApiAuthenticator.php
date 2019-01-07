@@ -16,11 +16,13 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
  */
 class ApiAuthenticator extends AbstractGuardAuthenticator
 {
+    const MESSAGE = 'message';
+
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $data = ['message' => 'Authentication Required'];
+        $data = [self::MESSAGE => 'Authentication Required'];
 
-        return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
+        return new JsonResponse($data);
     }
 
     public function supports(Request $request)
@@ -30,18 +32,24 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
 
     public function getCredentials(Request $request)
     {
-        return ['apiKey' => $request->headers->get('apiKey'), 'apiPassword' => $request->headers->get('apiPassword')];
+        return [
+            'apiKey'      => $request->headers->get('X-API-KEY'),
+            'apiPassword' => $request->headers->get('X-API-PASSWORD'),
+        ];
     }
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         $apiKey = $credentials['apiKey'];
+        $apiPassword = $credentials['apiPassword'];
 
-        if (null === $apiKey) {
+        if (null === $apiKey || null === $apiPassword) {
             return null;
         }
 
-        return $userProvider->loadUserByUsername($apiKey);
+        $user = $userProvider->loadUserByUsername($apiKey);
+
+        return $user;
     }
 
     public function checkCredentials($credentials, UserInterface $user)
@@ -51,11 +59,26 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        $data = [
-            'message' => strtr($exception->getMessageKey(), $exception->getMessageData()),
-        ];
+        $credentials = $exception->getToken()->getCredentials();
 
-        return new JsonResponse($data, Response::HTTP_FORBIDDEN);
+        switch (true) {
+            case (empty($credentials['apiKey']) && empty($credentials['apiPassword'])) :
+                $errors['errors'] = ['status' => 400, self::MESSAGE => 'Authentication required'];
+
+                return $this->createJsonResponse($errors);
+            case (empty($credentials['apiKey'])):
+                $errors['errors'] = ['status' => 400, self::MESSAGE => 'Required parameter missing : X-API-KEY'];
+
+                return $this->createJsonResponse($errors);
+            case (empty($credentials['apiPassword'])) :
+                $errors['errors'] = ['status' => 400, self::MESSAGE => 'Required parameter missing : X-API-PASSWORD'];
+
+                return $this->createJsonResponse($errors);
+            default :
+                $errors['errors'] = ['status' => 403, self::MESSAGE => 'Please provide valid credentials'];
+
+                return $this->createJsonResponse($errors, Response::HTTP_FORBIDDEN);
+        }
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
@@ -66,5 +89,10 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
     public function supportsRememberMe()
     {
         return false;
+    }
+
+    private function createJsonResponse(array $errors, int $status = Response::HTTP_BAD_REQUEST): JsonResponse
+    {
+        return new JsonResponse(json_encode($errors, 256), $status, [], true);
     }
 }

@@ -3,9 +3,13 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Expose;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CompanyRepository")
+ *
+ * @ExclusionPolicy("all")
  */
 class Company extends User
 {
@@ -21,6 +25,8 @@ class Company extends User
 
     /**
      * @ORM\Column(type="string", length=255)
+     *
+     * @Expose
      */
     private $name;
 
@@ -60,12 +66,12 @@ class Company extends User
         return $this;
     }
 
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->apiPassword;
     }
 
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->apiKey;
     }

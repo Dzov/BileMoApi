@@ -2,26 +2,32 @@
 
 namespace App\Controller\Customers;
 
+use App\Controller\AbstractApiController;
 use App\Entity\CompanyCustomer;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
-class ListCompanyCustomersController extends AbstractController
+class ListCompanyCustomersController extends AbstractApiController
 {
     /**
-     * @Route("/api/customers", name="list_company_customers")
+     * Returns the list of a company's customers.
+     *
+     * @SWG\Response(response=200, description="Returns the list of all company customers",
+     *     @SWG\Schema(type="array", @SWG\Items(ref=@Model(type=CompanyCustomer::class))))
+     *
+     * @SWG\Tag(name="customers")
+     *
+     * @Route("/api/customers", name="list_company_customers", methods={"GET"})
      */
-    public function list(SerializerInterface $serializer)
+    public function list()
     {
         $company = $this->getUser();
 
-        $customers = $this->getDoctrine()->getRepository(CompanyCustomer::class)->findAllByCompany($company->getId());
+        $customers = $this->getDoctrine()->getRepository(CompanyCustomer::class)->findBy(
+            ['company' => $company->getId()]
+        );
 
-        $data = $serializer->serialize($customers, 'json');
-
-        return new JsonResponse($data, Response::HTTP_OK, [], true);
+        return $this->createJsonResponse($customers);
     }
 }
