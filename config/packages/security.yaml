@@ -1,0 +1,40 @@
+security:
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    providers:
+        company_provider:
+            entity:
+                class: App\Entity\Company
+                property: apiKey
+        employee_provider:
+            entity:
+                class: App\Entity\CompanyEmployee
+                property: email
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            pattern: ^/api/token$
+            guard:
+                authenticators:
+                    - App\Security\ApiAuthenticator
+            provider: company_provider
+            stateless: true
+        documentation:
+            pattern: ^/api/doc
+            security: false
+        jwt_key:
+            stateless: true
+            pattern: ^/api/
+            provider: company_provider
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+
+    access_control:
+        # - { path: ^/admin, roles: ROLE_ADMIN }
+        # - { path: ^/profile, roles: ROLE_USER }
+
+    encoders:
+        App\Entity\CompanyEmployee:
+            algorithm: bcrypt
