@@ -4,7 +4,6 @@ namespace App\Controller\Customers;
 
 use App\Controller\AbstractApiController;
 use App\Entity\CompanyCustomer;
-use App\Exception\CompanyCustomerNotFoundException;
 use Doctrine\ORM\NoResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Swagger\Annotations as SWG;
@@ -49,8 +48,9 @@ class DeleteCompanyCustomersController extends AbstractApiController
     {
         try {
             $company = $this->getUser();
+            $customerId = $customer->getId();
             $customer = $this->getDoctrine()->getRepository(CompanyCustomer::class)
-                ->findOneCustomerByIdAndCompany($customer->getId(), $company->getId());
+                ->findOneCustomerByIdAndCompany($customerId, $company->getId());
 
             $this->deleteCustomer($customer);
 

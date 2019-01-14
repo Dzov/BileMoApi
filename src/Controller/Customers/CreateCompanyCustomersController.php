@@ -52,6 +52,8 @@ class CreateCompanyCustomersController extends AbstractApiController
 
         $this->createCustomer($customer);
 
+        $this->invalidateCache('customers.list');
+
         return $this->createJsonResponse($customer, [], Response::HTTP_CREATED);
     }
 
