@@ -6,7 +6,6 @@ use App\Controller\AbstractApiController;
 use App\Entity\CompanyCustomer;
 use App\Manager\CompanyCustomer\CompanyCustomerManager;
 use Nelmio\ApiDocBundle\Annotation\Model;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -40,11 +39,10 @@ class ShowCompanyCustomerController extends AbstractApiController
      * @SWG\Tag(name="customers")
      *
      * @Route("/api/customers/{id}", name="show_company_customer", methods={"GET"}, requirements={"id"="\d+"})
-     * @Entity("CompanyCustomer", expr="repository.find(id)"))
      */
-    public function show(CompanyCustomer $customer, CompanyCustomerManager $manager, UserInterface $user)
+    public function show(int $id, CompanyCustomerManager $manager, UserInterface $user)
     {
-        $customer = $manager->showCustomer($customer->getId(), $user->getId());
+        $customer = $manager->showCustomer($id, $user->getId());
 
         return $this->createJsonResponse($customer);
     }
