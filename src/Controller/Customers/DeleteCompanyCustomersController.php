@@ -4,7 +4,6 @@ namespace App\Controller\Customers;
 
 use App\Controller\AbstractApiController;
 use App\Entity\CompanyCustomer;
-use App\Exception\CompanyCustomerNotFoundException;
 use Doctrine\ORM\NoResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Swagger\Annotations as SWG;
@@ -24,6 +23,15 @@ class DeleteCompanyCustomersController extends AbstractApiController
      * @SWG\Response(response=404, description="The resource does not exist")
      *
      * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     required=true,
+     *     type="string",
+     *     default="Bearer {jwt}",
+     *     description="Your Json Web Token"
+     * )
+     *
+     * @SWG\Parameter(
      *     name="id",
      *     in="path",
      *     required=true,
@@ -40,8 +48,9 @@ class DeleteCompanyCustomersController extends AbstractApiController
     {
         try {
             $company = $this->getUser();
+            $customerId = $customer->getId();
             $customer = $this->getDoctrine()->getRepository(CompanyCustomer::class)
-                ->findOneCustomerByIdAndCompany($customer->getId(), $company->getId());
+                ->findOneCustomerByIdAndCompany($customerId, $company->getId());
 
             $this->deleteCustomer($customer);
 

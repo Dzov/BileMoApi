@@ -20,6 +20,22 @@ class JwtAuthController extends AbstractApiController
      * @SWG\Response(response=400, description="Bad request, credentials missing")
      * @SWG\Response(response=403, description="Forbidden, invalid credentials")
      *
+     * @SWG\Parameter(
+     *     name="X-API-KEY",
+     *     in="header",
+     *     required=true,
+     *     type="string",
+     *     description="The company's api key"
+     * )
+     *
+     * @SWG\Parameter(
+     *     name="X-API-PASSWORD",
+     *     in="header",
+     *     required=true,
+     *     type="string",
+     *     description="The company's api password"
+     * )
+     *
      * @SWG\Tag(name="authorization")
      *
      * @Route("/api/token", name="authentication", methods={"GET"})

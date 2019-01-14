@@ -12,9 +12,9 @@ abstract class AbstractNormalizer implements NormalizerInterface
      */
     protected $exceptionTypes;
 
-    public function __construct(array $exceptionTypes = [])
+    public function __construct()
     {
-        $this->exceptionTypes = $exceptionTypes;
+        $this->exceptionTypes = $this->getExceptionTypes();
     }
 
     public function supports(\Exception $exception): bool

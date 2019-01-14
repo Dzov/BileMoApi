@@ -16,18 +16,42 @@ class ListCompanyCustomersController extends AbstractApiController
      * @SWG\Response(response=200, description="Returns the list of all company customers",
      *     @SWG\Schema(type="array", @SWG\Items(ref=@Model(type=CompanyCustomer::class))))
      *
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     required=true,
+     *     type="string",
+     *     default="Bearer {jwt}",
+     *     description="Your Json Web Token"
+     * )
+     *
      * @SWG\Tag(name="customers")
      *
      * @Route("/api/customers", name="list_company_customers", methods={"GET"})
      */
     public function list()
     {
-        $company = $this->getUser();
+        $cacheItem = $this->cache->getItem('customers.list');
 
+        if (!$cacheItem->isHit()) {
+            $customers = $this->getCustomers();
+
+            $cacheItem->set($customers);
+            $this->cache->save($cacheItem);
+        }
+
+        $customers = $cacheItem->get();
+
+        return $this->createJsonResponse($customers);
+    }
+
+    private function getCustomers(): array
+    {
+        $company = $this->getUser();
         $customers = $this->getDoctrine()->getRepository(CompanyCustomer::class)->findBy(
             ['company' => $company->getId()]
         );
 
-        return $this->createJsonResponse($customers);
+        return $customers;
     }
 }
