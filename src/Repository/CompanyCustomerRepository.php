@@ -36,4 +36,16 @@ class CompanyCustomerRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleResult();
     }
+
+    public function insert(CompanyCustomer $customer)
+    {
+        $this->_em->persist($customer);
+        $this->_em->flush();
+    }
+
+    public function delete(CompanyCustomer $customer)
+    {
+        $this->_em->remove($customer);
+        $this->_em->flush();
+    }
 }

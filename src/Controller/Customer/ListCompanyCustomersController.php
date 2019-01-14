@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Controller\Customers;
+namespace App\Controller\Customer;
 
 use App\Controller\AbstractApiController;
 use App\Entity\CompanyCustomer;
+use App\Manager\CompanyCustomer\CompanyCustomerManager;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class ListCompanyCustomersController extends AbstractApiController
 {
@@ -29,29 +31,10 @@ class ListCompanyCustomersController extends AbstractApiController
      *
      * @Route("/api/customers", name="list_company_customers", methods={"GET"})
      */
-    public function list()
+    public function list(CompanyCustomerManager $manager, UserInterface $user)
     {
-        $cacheItem = $this->cache->getItem('customers.list');
-
-        if (!$cacheItem->isHit()) {
-            $customers = $this->getCustomers();
-
-            $cacheItem->set($customers);
-            $this->cache->save($cacheItem);
-        }
-
-        $customers = $cacheItem->get();
+        $customers = $manager->listCustomers($user->getId());
 
         return $this->createJsonResponse($customers);
-    }
-
-    private function getCustomers(): array
-    {
-        $company = $this->getUser();
-        $customers = $this->getDoctrine()->getRepository(CompanyCustomer::class)->findBy(
-            ['company' => $company->getId()]
-        );
-
-        return $customers;
     }
 }

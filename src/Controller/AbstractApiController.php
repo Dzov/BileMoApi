@@ -7,8 +7,6 @@ use Hateoas\HateoasBuilder;
 use Hateoas\UrlGenerator\SymfonyUrlGenerator;
 use JMS\Serializer\SerializationContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -35,21 +33,14 @@ abstract class AbstractApiController extends AbstractController
      */
     private $generator;
 
-    /**
-     * @var FilesystemAdapter
-     */
-    protected $cache;
-
     public function __construct(
         SerializerInterface $serializer,
         ValidatorInterface $validator,
-        UrlGeneratorInterface $generator,
-        AdapterInterface $cache
+        UrlGeneratorInterface $generator
     ) {
         $this->serializer = $serializer;
         $this->validator = $validator;
         $this->generator = $generator;
-        $this->cache = $cache;
     }
 
     protected function createJsonResponse($data, array $groups = [], int $response = Response::HTTP_OK): JsonResponse
@@ -89,10 +80,5 @@ abstract class AbstractApiController extends AbstractController
         }
 
         return $hateoas->serialize($data, 'json');
-    }
-
-    protected function invalidateCache(string $key): void
-    {
-        $this->cache->deleteItem($key);
     }
 }

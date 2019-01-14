@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Controller\Customers;
+namespace App\Controller\Customer;
 
 use App\Controller\AbstractApiController;
 use App\Entity\CompanyCustomer;
+use App\Manager\CompanyCustomer\CompanyCustomerManager;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,26 +42,26 @@ class CreateCompanyCustomersController extends AbstractApiController
      * @Route("/api/customers", name="create_company_customer", methods={"POST"})
      * @throws \App\Exception\InvalidFormDataException
      */
-    public function create(Request $request, SerializerInterface $serializer)
+    public function create(Request $request, SerializerInterface $serializer, CompanyCustomerManager $manager)
     {
-        $data = $request->getContent();
+        $customer = $this->handleRequest($request->getContent(), $serializer);
+
+        $manager->createCustomer($customer);
+
+        return $this->createJsonResponse($customer, [], Response::HTTP_CREATED);
+    }
+
+    /**
+     * @throws \App\Exception\InvalidFormDataException
+     */
+    private function handleRequest(string $data, SerializerInterface $serializer): CompanyCustomer
+    {
         /** @var CompanyCustomer $customer */
         $customer = $serializer->deserialize($data, CompanyCustomer::class, 'json');
         $customer->setCompany($this->getUser());
 
         $this->validate($customer);
 
-        $this->createCustomer($customer);
-
-        $this->invalidateCache('customers.list');
-
-        return $this->createJsonResponse($customer, [], Response::HTTP_CREATED);
-    }
-
-    private function createCustomer($customer): void
-    {
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($customer);
-        $em->flush();
+        return $customer;
     }
 }

@@ -1,13 +1,15 @@
 <?php
 
-namespace App\Controller\Customers;
+namespace App\Controller\Customer;
 
 use App\Controller\AbstractApiController;
 use App\Entity\CompanyCustomer;
+use App\Manager\CompanyCustomer\CompanyCustomerManager;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class ShowCompanyCustomerController extends AbstractApiController
 {
@@ -40,33 +42,10 @@ class ShowCompanyCustomerController extends AbstractApiController
      * @Route("/api/customers/{id}", name="show_company_customer", methods={"GET"}, requirements={"id"="\d+"})
      * @Entity("CompanyCustomer", expr="repository.find(id)"))
      */
-    public function show(CompanyCustomer $customer)
+    public function show(CompanyCustomer $customer, CompanyCustomerManager $manager, UserInterface $user)
     {
-        $cacheItem = $this->cache->getItem('customers.' . md5($customer->getId()));
-
-        if (!$cacheItem->isHit()) {
-            $customer = $this->getCustomer($customer);
-
-            $cacheItem->set($customer);
-            $this->cache->save($cacheItem);
-        }
-
-        $customer = $cacheItem->get();
+        $customer = $manager->showCustomer($customer->getId(), $user->getId());
 
         return $this->createJsonResponse($customer);
-    }
-
-    /**
-     * @return CompanyCustomer|null|object
-     */
-    private function getCustomer(CompanyCustomer $customer)
-    {
-        $company = $this->getUser();
-
-        $customer = $this->getDoctrine()->getRepository(CompanyCustomer::class)->findOneBy(
-            ['company' => $company->getId(), 'id' => $customer->getId()]
-        );
-
-        return $customer;
     }
 }
