@@ -21,7 +21,7 @@ class DeleteCompanyCustomersController extends AbstractApiController
     /**
      * Deletes a customer.
      *
-     * @SWG\Response(response=200)
+     * @SWG\Response(response=200, description="The resource has been deleted")
      * @SWG\Response(response=404, description="The resource does not exist")
      *
      * @SWG\Parameter(
