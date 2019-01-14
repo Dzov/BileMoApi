@@ -19,19 +19,19 @@ class CompanyFixtures extends Fixture
         $company1 = new Company();
         $company1->setName('Orange');
         $company1->setApiKey('azezhjh3462ZGZ');
-        $company1->setApiPassword('test');
+        $company1->setApiPassword(password_hash('test', PASSWORD_BCRYPT));
         $manager->persist($company1);
 
         $company2 = new Company();
         $company2->setName('Free');
         $company2->setApiKey('cvblng45443AFQ');
-        $company2->setApiPassword('test');
+        $company2->setApiPassword(password_hash('test', PASSWORD_BCRYPT));
         $manager->persist($company2);
 
         $company3 = new Company();
         $company3->setName('SFR');
         $company3->setApiKey('H34FSHSA3RF');
-        $company3->setApiPassword('test');
+        $company3->setApiPassword(password_hash('test', PASSWORD_BCRYPT));
         $manager->persist($company3);
 
         $manager->flush();

@@ -30,10 +30,9 @@ services:
     App\EventSubscriber\ExceptionSubscriber:
         tags:
             - { name: kernel.event_subscriber }
-
-    app.normalizer.resource_validation_exception:
-        class: App\Normalizer\NotFoundHttpExceptionNormalizer
-        arguments:
-            - { type: 'Symfony\Component\HttpKernel\Exception\NotFoundHttpException' }
+    App\Normalizer\NotFoundHttpExceptionNormalizer:
         tags:
             - { name: app.normalizer }
+    App\Normalizer\InvalidFormDataExceptionNormalizer:
+            tags:
+                - { name: app.normalizer }

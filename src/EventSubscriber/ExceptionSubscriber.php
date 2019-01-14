@@ -38,14 +38,14 @@ class ExceptionSubscriber implements EventSubscriberInterface
 
         if (null == $response) {
             $response['errors'] = [
-                'code'    => Response::HTTP_BAD_REQUEST,
+                'status'    => Response::HTTP_BAD_REQUEST,
                 'message' => $event->getException()->getMessage(),
             ];
         }
 
         $body = $this->serializer->serialize($response, 'json');
 
-        $event->setResponse(new JsonResponse($body, $response['errors']['code'], [], true));
+        $event->setResponse(new JsonResponse($body, $response['errors']['status'], [], true));
     }
 
     public function addNormalizer(NormalizerInterface $normalizer)

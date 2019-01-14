@@ -7,6 +7,8 @@ use Hateoas\HateoasBuilder;
 use Hateoas\UrlGenerator\SymfonyUrlGenerator;
 use JMS\Serializer\SerializationContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -33,17 +35,24 @@ abstract class AbstractApiController extends AbstractController
      */
     private $generator;
 
+    /**
+     * @var FilesystemAdapter
+     */
+    protected $cache;
+
     public function __construct(
         SerializerInterface $serializer,
         ValidatorInterface $validator,
-        UrlGeneratorInterface $generator
+        UrlGeneratorInterface $generator,
+        AdapterInterface $cache
     ) {
         $this->serializer = $serializer;
         $this->validator = $validator;
         $this->generator = $generator;
+        $this->cache = $cache;
     }
 
-    public function createJsonResponse($data, array $groups = [], int $response = Response::HTTP_OK): JsonResponse
+    protected function createJsonResponse($data, array $groups = [], int $response = Response::HTTP_OK): JsonResponse
     {
         $jsonData = $this->serializeHateoas($data, $groups);
 
@@ -53,7 +62,7 @@ abstract class AbstractApiController extends AbstractController
     /**
      * @throws InvalidFormDataException
      */
-    public function validate($data)
+    protected function validate($data)
     {
         $errors = $this->validator->validate($data);
 
@@ -67,7 +76,7 @@ abstract class AbstractApiController extends AbstractController
         }
     }
 
-    public function serializeHateoas($data, array $groups = []): string
+    protected function serializeHateoas($data, array $groups = []): string
     {
         $hateoas = HateoasBuilder::create()
             ->setUrlGenerator(null, new SymfonyUrlGenerator($this->generator))
@@ -80,5 +89,10 @@ abstract class AbstractApiController extends AbstractController
         }
 
         return $hateoas->serialize($data, 'json');
+    }
+
+    protected function invalidateCache(string $key): void
+    {
+        $this->cache->deleteItem($key);
     }
 }
