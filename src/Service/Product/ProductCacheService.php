@@ -27,9 +27,24 @@ class ProductCacheService extends AbstractCacheService
         $this->repository = $repository;
     }
 
-    protected function getItemKey(array $parameters = []): string
+    public function getMobilePhone(int $productId): MobilePhone
     {
-        return 'products.' . $parameters[self::PRODUCT_ID];
+        return $this->getCacheItem([self::PRODUCT_ID => $productId]);
+    }
+
+    /**
+     * @return MobilePhone[]
+     */
+    public function getMobilePhones(): array
+    {
+        return $this->getCacheList();
+    }
+
+    protected function getItemKey(array $parameters = []): ?string
+    {
+        if (isset($parameters[self::PRODUCT_ID])) {
+            return 'products.' . $parameters[self::PRODUCT_ID];
+        }
     }
 
     protected function getListKey(): string

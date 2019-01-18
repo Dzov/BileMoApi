@@ -4,7 +4,6 @@ namespace App\Manager\Product;
 
 use App\Entity\MobilePhone;
 use App\Service\Product\ProductCacheService;
-use Symfony\Component\Cache\CacheItem;
 
 /**
  * @author Amélie Haladjian <amelie.haladjian@gmail.com>
@@ -26,11 +25,11 @@ class ProductManager
      */
     public function listMobilePhones(): array
     {
-        return $this->cacheService->getCacheList();
+        return $this->cacheService->getMobilePhones();
     }
 
-    public function showMobilePhone(int $phoneId): CacheItem
+    public function showMobilePhone(int $phoneId): MobilePhone
     {
-        return $this->cacheService->getCacheItem([ProductCacheService::PRODUCT_ID => $phoneId]);
+        return $this->cacheService->getMobilePhone($phoneId);
     }
 }
