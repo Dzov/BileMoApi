@@ -26,12 +26,12 @@ abstract class AbstractManager
         $this->cache->deleteItem($key);
     }
 
-    protected function cacheItem(string $key): CacheItem
+    protected function getCacheItem(string $key): CacheItem
     {
         return $this->cache->getItem($key);
     }
 
-    protected function setCacheItem(CacheItem $cacheItem, $data)
+    protected function setItem(CacheItem $cacheItem, $data)
     {
         $cacheItem->set($data);
         $this->cache->save($cacheItem);

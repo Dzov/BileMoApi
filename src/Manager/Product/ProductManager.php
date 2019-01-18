@@ -17,7 +17,7 @@ class ProductManager extends AbstractManager
      */
     private $repository;
 
-    public function __construct(MobilePhoneRepository $repository, AdapterInterface $cache)
+    public function __construct(AdapterInterface $cache, MobilePhoneRepository $repository)
     {
         parent::__construct($cache);
         $this->repository = $repository;
@@ -28,12 +28,12 @@ class ProductManager extends AbstractManager
      */
     public function listMobilePhones(): array
     {
-        $cacheItem = $this->cacheItem('products.list');
+        $cacheItem = $this->getCacheItem('products.list');
 
         if (!$cacheItem->isHit()) {
             $phones = $this->repository->findAll();
 
-            $this->setCacheItem($cacheItem, $phones);
+            $this->setItem($cacheItem, $phones);
         }
 
         return $cacheItem->get();
@@ -41,12 +41,16 @@ class ProductManager extends AbstractManager
 
     public function showMobilePhone(int $phoneId): MobilePhone
     {
-        $cacheItem = $this->cacheItem('products.' . $phoneId);
+//        return $this->getItem('products.' . $phoneId, function () use ($repository))
+        {}
+
+
+        $cacheItem = $this->getCacheItem();
 
         if (!$cacheItem->isHit()) {
             $phone = $this->repository->find($phoneId);
 
-            $this->setCacheItem($cacheItem, $phone);
+            $this->setItem($cacheItem, $phone);
         }
 
         return $cacheItem->get();

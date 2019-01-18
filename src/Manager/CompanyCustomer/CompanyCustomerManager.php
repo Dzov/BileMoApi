@@ -17,7 +17,7 @@ class CompanyCustomerManager extends AbstractManager
      */
     private $repository;
 
-    public function __construct(CompanyCustomerRepository $repository, AdapterInterface $cache)
+    public function __construct(AdapterInterface $cache, CompanyCustomerRepository $repository)
     {
         parent::__construct($cache);
         $this->repository = $repository;
@@ -46,12 +46,12 @@ class CompanyCustomerManager extends AbstractManager
      */
     public function listCustomers(int $companyId): array
     {
-        $cacheItem = $this->cacheItem('customers.list');
+        $cacheItem = $this->getCacheItem('customers.list');
 
         if (!$cacheItem->isHit()) {
             $customers = $this->repository->findBy(['company' => $companyId]);;
 
-            $this->setCacheItem($cacheItem, $customers);
+            $this->setItem($cacheItem, $customers);
         }
 
         return $cacheItem->get();
@@ -59,12 +59,12 @@ class CompanyCustomerManager extends AbstractManager
 
     public function showCustomer(int $customerId, int $companyId): CompanyCustomer
     {
-        $cacheItem = $this->cacheItem('customers.' . $customerId);
+        $cacheItem = $this->getCacheItem('customers.' . $customerId);
 
         if (!$cacheItem->isHit()) {
             $customer = $this->repository->findOneBy(['id' => $customerId, 'company' => $companyId]);
 
-            $this->setCacheItem($cacheItem, $customer);
+            $this->setItem($cacheItem, $customer);
         }
 
         return $cacheItem->get();
