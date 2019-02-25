@@ -3,42 +3,37 @@
 namespace App\Manager\CompanyCustomer;
 
 use App\Entity\CompanyCustomer;
-use App\Manager\AbstractManager;
-use App\Repository\CompanyCustomerRepository;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
+use App\Service\CompanyCustomer\CompanyCustomerCacheService;
 
 /**
  * @author Amélie Haladjian <amelie.haladjian@gmail.com>
  */
-class CompanyCustomerManager extends AbstractManager
+class CompanyCustomerManager
 {
     /**
-     * @var CompanyCustomerRepository
+     * @var CompanyCustomerCacheService
      */
-    private $repository;
+    protected $cacheService;
 
-    public function __construct(AdapterInterface $cache, CompanyCustomerRepository $repository)
+    public function __construct(CompanyCustomerCacheService $cacheService)
     {
-        parent::__construct($cache);
-        $this->repository = $repository;
-    }
-
-    public function createCustomer(CompanyCustomer $customer): void
-    {
-        $this->repository->insert($customer);
-        $this->invalidateCache('customers.list');
+        $this->cacheService = $cacheService;
     }
 
     /**
-     * @throws \Doctrine\ORM\NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
+    public function createCustomer(CompanyCustomer $customer): void
+    {
+        $this->cacheService->createCompanyCustomer($customer);
+    }
+
+    /**
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function deleteCustomer(int $customerId, int $companyId): void
     {
-        $customer = $this->repository->findOneCustomerByIdAndCompany($customerId, $companyId);
-
-        $this->repository->delete($customer);
-        $this->invalidateCache('customers.list');
+        $this->cacheService->deleteCompanyCustomer($customerId, $companyId);
     }
 
     /**
@@ -46,27 +41,14 @@ class CompanyCustomerManager extends AbstractManager
      */
     public function listCustomers(int $companyId): array
     {
-        $cacheItem = $this->getCacheItem('customers.list');
-
-        if (!$cacheItem->isHit()) {
-            $customers = $this->repository->findBy(['company' => $companyId]);;
-
-            $this->setItem($cacheItem, $customers);
-        }
-
-        return $cacheItem->get();
+        return $this->cacheService->getCompanyCustomers($companyId);
     }
 
-    public function showCustomer(int $customerId, int $companyId): CompanyCustomer
+    /**
+     * @return CompanyCustomer
+     */
+    public function getCustomer(int $customerId, int $companyId): CompanyCustomer
     {
-        $cacheItem = $this->getCacheItem('customers.' . $customerId);
-
-        if (!$cacheItem->isHit()) {
-            $customer = $this->repository->findOneBy(['id' => $customerId, 'company' => $companyId]);
-
-            $this->setItem($cacheItem, $customer);
-        }
-
-        return $cacheItem->get();
+        return $this->cacheService->getCompanyCustomer($customerId, $companyId);
     }
 }

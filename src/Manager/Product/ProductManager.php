@@ -3,24 +3,21 @@
 namespace App\Manager\Product;
 
 use App\Entity\MobilePhone;
-use App\Manager\AbstractManager;
-use App\Repository\MobilePhoneRepository;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
+use App\Service\Product\ProductCacheService;
 
 /**
  * @author Amélie Haladjian <amelie.haladjian@gmail.com>
  */
-class ProductManager extends AbstractManager
+class ProductManager
 {
     /**
-     * @var MobilePhoneRepository
+     * @var ProductCacheService
      */
-    private $repository;
+    private $cacheService;
 
-    public function __construct(AdapterInterface $cache, MobilePhoneRepository $repository)
+    public function __construct(ProductCacheService $service)
     {
-        parent::__construct($cache);
-        $this->repository = $repository;
+        $this->cacheService = $service;
     }
 
     /**
@@ -28,31 +25,11 @@ class ProductManager extends AbstractManager
      */
     public function listMobilePhones(): array
     {
-        $cacheItem = $this->getCacheItem('products.list');
-
-        if (!$cacheItem->isHit()) {
-            $phones = $this->repository->findAll();
-
-            $this->setItem($cacheItem, $phones);
-        }
-
-        return $cacheItem->get();
+        return $this->cacheService->getMobilePhones();
     }
 
     public function showMobilePhone(int $phoneId): MobilePhone
     {
-//        return $this->getItem('products.' . $phoneId, function () use ($repository))
-        {}
-
-
-        $cacheItem = $this->getCacheItem();
-
-        if (!$cacheItem->isHit()) {
-            $phone = $this->repository->find($phoneId);
-
-            $this->setItem($cacheItem, $phone);
-        }
-
-        return $cacheItem->get();
+        return $this->cacheService->getMobilePhone($phoneId);
     }
 }

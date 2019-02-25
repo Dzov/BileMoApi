@@ -42,7 +42,7 @@ class ShowCompanyCustomerController extends AbstractApiController
      */
     public function show(int $id, CompanyCustomerManager $manager, UserInterface $user)
     {
-        $customer = $manager->showCustomer($id, $user->getId());
+        $customer = $manager->getCustomer($id, $user->getId());
 
         return $this->createJsonResponse($customer);
     }
