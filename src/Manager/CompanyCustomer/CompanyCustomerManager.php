@@ -47,7 +47,7 @@ class CompanyCustomerManager
     /**
      * @return CompanyCustomer
      */
-    public function showCustomer(int $customerId, int $companyId): CompanyCustomer
+    public function getCustomer(int $customerId, int $companyId): CompanyCustomer
     {
         return $this->cacheService->getCompanyCustomer($customerId, $companyId);
     }

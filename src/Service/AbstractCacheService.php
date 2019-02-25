@@ -32,7 +32,13 @@ abstract class AbstractCacheService
 
     protected function getKeys(array $parameters = []): array
     {
-        return [$this->getItemKey($parameters), $this->getListKey()];
+        $keys = [$this->getListKey()];
+
+        if (!empty($parameters)) {
+            $keys[] = $this->getItemKey($parameters);
+        }
+
+        return $keys;
     }
 
     protected function getCacheItem(array $parameters = [])

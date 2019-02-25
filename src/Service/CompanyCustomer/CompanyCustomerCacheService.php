@@ -62,6 +62,8 @@ class CompanyCustomerCacheService extends AbstractCacheService
         if (isset($parameters[CompanyCustomerCacheService::CUSTOMER_ID])) {
             return 'customers.' . $parameters[CompanyCustomerCacheService::CUSTOMER_ID];
         }
+
+        return null;
     }
 
     protected function getListKey(): string
