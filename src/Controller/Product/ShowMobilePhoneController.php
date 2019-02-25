@@ -4,8 +4,8 @@ namespace App\Controller\Product;
 
 use App\Controller\AbstractApiController;
 use App\Entity\MobilePhone;
+use App\Manager\Product\ProductManager;
 use Nelmio\ApiDocBundle\Annotation\Model;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Swagger\Annotations as SWG;
 
@@ -41,10 +41,11 @@ class ShowMobilePhoneController extends AbstractApiController
      * @SWG\Tag(name="phones")
      *
      * @Route("/api/phones/{id}", name="show_phone", methods={"GET"}, requirements={"id"="\d+"})
-     * @Entity("MobilePhone", expr="repository.find(id)")
      */
-    public function show(MobilePhone $phone)
+    public function show(int $id, ProductManager $manager)
     {
+        $phone = $manager->showMobilePhone($id);
+
         return $this->createJsonResponse($phone, ['details']);
     }
 }

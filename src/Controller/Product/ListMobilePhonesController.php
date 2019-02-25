@@ -4,6 +4,7 @@ namespace App\Controller\Product;
 
 use App\Controller\AbstractApiController;
 use App\Entity\MobilePhone;
+use App\Manager\Product\ProductManager;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,18 +30,9 @@ class ListMobilePhonesController extends AbstractApiController
      *
      * @Route("/api/phones", name="list_mobile_phones", methods={"GET"})
      */
-    public function list()
+    public function list(ProductManager $manager)
     {
-        $cacheItem = $this->cache->getItem('products.list');
-
-        if (!$cacheItem->isHit()) {
-            $phones = $this->getDoctrine()->getRepository(MobilePhone::class)->findAll();
-
-            $cacheItem->set($phones);
-            $this->cache->save($cacheItem);
-        }
-
-        $phones = $cacheItem->get();
+        $phones = $manager->listMobilePhones();
 
         return $this->createJsonResponse($phones, ['list']);
     }

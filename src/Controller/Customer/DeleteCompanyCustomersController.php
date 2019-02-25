@@ -1,15 +1,17 @@
 <?php
 
-namespace App\Controller\Customers;
+namespace App\Controller\Customer;
 
 use App\Controller\AbstractApiController;
 use App\Entity\CompanyCustomer;
+use App\Manager\CompanyCustomer\CompanyCustomerManager;
 use Doctrine\ORM\NoResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @author Amélie Haladjian <amelie.haladjian@gmail.com>
@@ -19,7 +21,7 @@ class DeleteCompanyCustomersController extends AbstractApiController
     /**
      * Deletes a customer.
      *
-     * @SWG\Response(response=200, description="Deleted")
+     * @SWG\Response(response=200, description="The resource has been deleted")
      * @SWG\Response(response=404, description="The resource does not exist")
      *
      * @SWG\Parameter(
@@ -44,26 +46,18 @@ class DeleteCompanyCustomersController extends AbstractApiController
      * @Route("/api/customers/{id}", name="delete_company_customer", methods={"DELETE"}, requirements={"id"="\d+"})
      * @Entity("CompanyCustomer", expr="repository.find(id)"))
      */
-    public function delete(CompanyCustomer $customer): JsonResponse
-    {
+    public function delete(
+        CompanyCustomer $customer,
+        CompanyCustomerManager $manager,
+        UserInterface $user
+    ): JsonResponse {
         try {
-            $company = $this->getUser();
             $customerId = $customer->getId();
-            $customer = $this->getDoctrine()->getRepository(CompanyCustomer::class)
-                ->findOneCustomerByIdAndCompany($customerId, $company->getId());
-
-            $this->deleteCustomer($customer);
+            $manager->deleteCustomer($customerId, $user->getId());
 
             return $this->createJsonResponse([]);
         } catch (NoResultException $e) {
             throw new NotFoundHttpException();
         }
-    }
-
-    private function deleteCustomer(CompanyCustomer $customer): void
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($customer);
-        $entityManager->flush();
     }
 }
