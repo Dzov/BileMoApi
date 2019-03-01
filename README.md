@@ -35,8 +35,6 @@ Copy the `.env` file at the root of the project and rename it to `.env.local`.
 
 In the `.env.local` file, replace the value of the variable `JWT_PASSPHRASE` with your passphrase.
 
-For more information on JWT's set up, please checkout the [LexikJWTAuthenticationBundle](https://github.com/lexik/LexikJWTAuthenticationBundle/blob/master/Resources/doc/index.md#installation) documentation.
-
 #### Database and fixtures
 In the `.env.local` file, adapt the `DATABASE_URL` variable by replacing the parameters `db_user`, `db_password` and `db_name` with your own configuration.
 
