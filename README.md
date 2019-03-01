@@ -15,7 +15,7 @@ MySQL 5.7.8
 
 Install the project on your computer.
 ```
-git git@github.com:Dzov/BileMoApi.git
+git clone git@github.com:Dzov/BileMoApi.git
 ```
 
 Install the dependencies using composer.
