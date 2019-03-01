@@ -49,7 +49,7 @@ Once your database has been properly set up, run the following command in order 
 ## Resources 
 The API documentation can be accessed through the route `api/doc`
 
-Diagrams can be found here : [UML Diagrams](https://github.com/Dzov/BileMoApi/tree/master/resources)
+Diagrams can be found here : [UML Diagrams](resources)
 
 Code quality has been analyzed with [Codacy](https://app.codacy.com/project/amelie.haladjian/BileMoApi/dashboard)
 
