@@ -17,8 +17,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @Hateoas\Relation("delete", href = @Hateoas\Route("delete_company_customer", parameters = { "id" =
  *                             "expr(object.getId())" }, absolute = true))
  *
- * @Hateoas\Relation("company", embedded = @Hateoas\Embedded("expr(object.getCompany())"))
- *
  * @ORM\Entity(repositoryClass="App\Repository\CompanyCustomerRepository")
  * @UniqueEntity("email")
  *
