@@ -16,7 +16,9 @@ class JwtAuthController extends AbstractApiController
     /**
      * Returns the necessary token to access api resources upon user authentication.
      *
-     * @SWG\Response(response=200, description="Authorization granted, returns access token")
+     * @SWG\Response(response=200, description="Authorization granted, returns access token",
+     *     examples={"jwt token": {"access_token" : "string"}})
+     *
      * @SWG\Response(response=400, description="Bad request, credentials missing")
      * @SWG\Response(response=403, description="Forbidden, invalid credentials")
      *
