@@ -38,8 +38,14 @@ In the `.env.local` file, replace the value of the variable `JWT_PASSPHRASE` wit
 #### Database and fixtures
 In the `.env.local` file, adapt the `DATABASE_URL` variable by replacing the parameters `db_user`, `db_password` and `db_name` with your own configuration.
 
-Create a new database by executing the command `php bin/console doctrine:database:create`. 
-Then, execute the command `php bin/console doctrine:schema:update --force` in order to create the different tables based on the entity mapping. 
+Create a new database: 
+```
+php bin/console doctrine:database:create. 
+```
+Then, create the different tables based on the entity mapping. 
+```
+php bin/console doctrine:schema:update --force
+```
 
 If your MySQL version is inferior to 5.7.8, run the command `php bin/console doctrine:migrations:migrate` in order to create the tables.
 
