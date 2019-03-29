@@ -5,7 +5,9 @@ namespace App\Service\Product;
 use App\Entity\MobilePhone;
 use App\Repository\MobilePhoneRepository;
 use App\Service\AbstractCacheService;
+use Doctrine\ORM\NoResultException;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @author Amélie Haladjian <amelie.haladjian@gmail.com>
@@ -54,7 +56,13 @@ class ProductCacheService extends AbstractCacheService
 
     protected function getItem(array $parameters = []): MobilePhone
     {
-        return $this->repository->find($parameters[self::PRODUCT_ID]);
+        try {
+            $product = $this->repository->findById($parameters[self::PRODUCT_ID]);
+
+            return $product;
+        } catch (NoResultException $e) {
+            throw new NotFoundHttpException();
+        }
     }
 
     /**

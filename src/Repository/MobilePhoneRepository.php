@@ -18,4 +18,17 @@ class MobilePhoneRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, MobilePhone::class);
     }
+
+    /**
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findById(int $productId): MobilePhone
+    {
+        return $this->createQueryBuilder('mp')
+            ->andWhere('mp.id = :productId')
+            ->setParameter(':productId', $productId)
+            ->getQuery()
+            ->getSingleResult();
+    }
 }
