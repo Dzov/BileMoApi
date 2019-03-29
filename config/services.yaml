@@ -34,5 +34,5 @@ services:
         tags:
             - { name: app.normalizer }
     App\Normalizer\InvalidFormDataExceptionNormalizer:
-            tags:
-                - { name: app.normalizer }
+        tags:
+            - { name: app.normalizer }
