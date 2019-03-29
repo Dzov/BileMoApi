@@ -46,6 +46,7 @@ class CompanyCustomerCacheService extends AbstractCacheService
     public function deleteCompanyCustomer(int $customerId, int $companyId)
     {
         $this->removeCacheItem([self::CUSTOMER_ID => $customerId, self::COMPANY_ID => $companyId]);
+        $this->clearCache();
     }
 
     /**
