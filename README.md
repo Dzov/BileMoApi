@@ -42,15 +42,17 @@ Create a new database:
 ```
 php bin/console doctrine:database:create. 
 ```
-Then, create the different tables based on the entity mapping. 
+Then, create the different tables based on the entity mapping:
 ```
 php bin/console doctrine:schema:update --force
 ```
 
 If your MySQL version is inferior to 5.7.8, run the command `php bin/console doctrine:migrations:migrate` in order to create the tables.
 
-Once your database has been properly set up, run the following command in order to import the data fixtures : `php bin/console doctrine:fixtures:load
-`
+Once your database has been properly set up, you can load the data fixtures:
+```
+php bin/console doctrine:fixtures:load
+```
 
 ## Resources 
 The API documentation can be accessed through the route `api/doc`
