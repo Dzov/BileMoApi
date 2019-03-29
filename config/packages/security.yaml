@@ -5,10 +5,6 @@ security:
             entity:
                 class: App\Entity\Company
                 property: apiKey
-        employee_provider:
-            entity:
-                class: App\Entity\CompanyEmployee
-                property: email
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -32,9 +28,9 @@ security:
                     - lexik_jwt_authentication.jwt_token_authenticator
 
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+    # - { path: ^/admin, roles: ROLE_ADMIN }
+    # - { path: ^/profile, roles: ROLE_USER }
 
     encoders:
-        App\Entity\CompanyEmployee:
+        App\Entity\Company:
             algorithm: bcrypt
