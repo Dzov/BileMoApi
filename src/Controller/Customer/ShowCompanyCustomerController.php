@@ -24,7 +24,7 @@ class ShowCompanyCustomerController extends AbstractApiController
      *     in="header",
      *     required=true,
      *     type="string",
-     *     default="Bearer {jwt}",
+     *     default="Bearer JWT_TOKEN",
      *     description="Your Json Web Token"
      * )
      *
