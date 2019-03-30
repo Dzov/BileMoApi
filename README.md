@@ -55,7 +55,8 @@ php bin/console doctrine:fixtures:load
 ```
 
 ## Resources 
-The API documentation can be accessed through the route `api/doc`
+The API documentation is available at [Bilemo Documentation](www.bilemo.dzovinar.com/api/doc). 
+You can use the credentials `H34FSHSA3RF`, `test` to test the api.  
 
 Diagrams can be found here : [UML Diagrams](resources)
 

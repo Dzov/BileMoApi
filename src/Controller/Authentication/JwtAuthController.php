@@ -27,7 +27,8 @@ class JwtAuthController extends AbstractApiController
      *     in="header",
      *     required=true,
      *     type="string",
-     *     description="The company's api key"
+     *     description="The company's api key",
+     *     default="H34FSHSA3RF"
      * )
      *
      * @SWG\Parameter(
@@ -35,7 +36,8 @@ class JwtAuthController extends AbstractApiController
      *     in="header",
      *     required=true,
      *     type="string",
-     *     description="The company's api password"
+     *     description="The company's api password",
+     *     default="test"
      * )
      *
      * @SWG\Tag(name="authorization")
